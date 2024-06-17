@@ -186,11 +186,12 @@ def main():
                     global_step += 1
             
             logger.info("\nTesting on validation set...")
-            f1, report = evaluate_model(model, val_data, label_list_capit, label_list_punc, args.eval_batch_size, device)
+            f1, report_capit, report_punc = evaluate_model(model, val_data, label_list_capit, label_list_punc, args.eval_batch_size, device)
             if f1 > best_val_f1:
                 best_val_f1 = f1
                 logger.info("\nFound better f1=%.4f on validation set. Saving model\n" %(f1))
-                logger.info("%s\n" %(report))
+                logger.info("%s\n" %(report_capit))
+                logger.info("%s\n" %(report_punc))
                 
                 torch.save(model.state_dict(), open(os.path.join(args.output_dir, 'model.pt'), 'wb'))
             

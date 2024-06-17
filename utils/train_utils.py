@@ -125,8 +125,11 @@ def evaluate_model(model, eval_dataset, label_list_capit, label_list_punc, batch
 
      model.eval() # turn of dropout
 
-     y_true = []
-     y_pred = []
+     y_true_capit = []
+     y_pred_capit = []
+
+     y_true_punc = []
+     y_pred_punc = []
 
      label_map_capit = {i: label for i, label in enumerate(label_list_capit, 1)}
      label_map_punc = {i: label for i, label in enumerate(label_list_punc, 1)}
@@ -164,11 +167,9 @@ def evaluate_model(model, eval_dataset, label_list_capit, label_list_punc, batch
                          temp_2.append(label_map_capit[logits_capit[i][j]])
 
                assert len(temp_1) == len(temp_2)
-               y_true.append(temp_1)
-               y_pred.append(temp_2)
+               y_true_capit.append(temp_1)
+               y_pred_capit.append(temp_2)
 
-     # report = classification_report(y_true, y_pred, digits=4)
-     # f1 = f1_score(y_true, y_pred, average='Macro')
 
           for i, cur_label in enumerate(label_ids_punc):
                temp_1 = []
@@ -180,10 +181,15 @@ def evaluate_model(model, eval_dataset, label_list_capit, label_list_punc, batch
                          temp_2.append(label_map_punc[logits_punc[i][j]])
 
                assert len(temp_1) == len(temp_2)
-               y_true.append(temp_1)
-               y_pred.append(temp_2)
+               y_true_punc.append(temp_1)
+               y_pred_punc.append(temp_2)
 
-     report = classification_report(y_true, y_pred, digits=4)
-     f1 = f1_score(y_true, y_pred, average='Macro')
+     report_capit = classification_report(y_true_capit, y_pred_capit, digits=4)
+     f1_capit = f1_score(y_true_capit, y_pred_capit, average='Macro')
 
-     return f1, report
+     report_punc = classification_report(y_true_punc, y_pred_punc, digits=4)
+     f1_punc = f1_score(y_true_punc, y_pred_punc, average='Macro')
+
+     f1_sum = f1_capit + f1_punc
+
+     return f1_sum, report_capit, report_punc
